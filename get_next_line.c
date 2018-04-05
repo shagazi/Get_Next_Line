@@ -6,12 +6,11 @@
 /*   By: shagazi <shagazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/03 12:33:57 by shagazi           #+#    #+#             */
-/*   Updated: 2018/04/04 16:36:48 by shagazi          ###   ########.fr       */
+/*   Updated: 2018/04/04 22:51:10 by shagazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 char			*return_buff(int fd)
 {
@@ -21,19 +20,15 @@ char			*return_buff(int fd)
 	char	*tmp;
 
 	if (fd == -1)
-	{
-		ft_putstr("Failed to open file. Please enter a file name.\n");
-		exit(1);
-	}
+		return (NULL);
 	fileread = ft_strnew(0);
 	buff = (char *)malloc(sizeof(char) * BUFF_SIZE + 1);
 	while ((returnread = read(fd, buff, BUFF_SIZE)))
 	{
 		buff[returnread] = '\0';
 		tmp = fileread;
-		if (tmp)
-			free(tmp);
 		fileread = ft_strjoin(tmp, buff);
+		free(tmp);
 	}
 	free(buff);
 	return (fileread);
@@ -53,27 +48,32 @@ static char		*return_line(char **str)
 		{
 			(*str) = ft_strchr((*str), '\n') + 1;
 			tmp[i] = '\0';
+			free(tmp);
+			return (tmp);
+		}
+		// if(ft_strcmp(tmp, (*str)) == 0 && (*str)[i] != '\n')
+		if(ft_strcmp(tmp, (*str)) == 0 && (*str)[i] != '\n')
+		{
+			ft_bzero(str, ft_strlen(*str));
+			free(tmp);
 			return (tmp);
 		}
 		i++;
 	}
-	//free(tmp);
 	return (0);
 }
 
 int				get_next_line(const int fd, char **line)
 {
-	static char *tmp;
+	static char *tmpstr;
 
-	// **line = '\0';
-	if (tmp == '\0')
-		tmp = return_buff(fd);
-	*line = return_line(&tmp);
-	printf("%s\n", *line);
+	if (tmpstr == '\0')
+		if(!(tmpstr = return_buff(fd)))
+			return(-1);
+	*line = return_line(&tmpstr);
 	if (*line != '\0')
 		return (1);
 	if (*line == '\0')
 		return (0);
 	return (-1);
-	return (0);
 }
