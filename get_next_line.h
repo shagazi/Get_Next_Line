@@ -6,12 +6,12 @@
 /*   By: shagazi <shagazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/03 12:34:09 by shagazi           #+#    #+#             */
-/*   Updated: 2018/04/04 20:51:41 by shagazi          ###   ########.fr       */
+/*   Updated: 2018/04/10 14:11:32 by shagazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GETNEXTLINE_H
-# define GETNEXTLINE_H
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 
 # include <sys/types.h>
 # include <sys/uio.h>
@@ -21,8 +21,9 @@
 # include <stdlib.h>
 # include "libft/libft.h"
 
-# define BUFF_SIZE 32
+# define BUFF_SIZE 1
+# define FDLIM 10000
 
 int get_next_line(const int fd, char **line);
-//static char *return_buff(int fd);
+
 #endif

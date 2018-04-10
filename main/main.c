@@ -6,36 +6,43 @@
 /*   By: shagazi <shagazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/04 16:05:42 by shagazi           #+#    #+#             */
-/*   Updated: 2018/04/04 23:23:43 by shagazi          ###   ########.fr       */
+/*   Updated: 2018/04/09 20:14:05 by shagazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "get_next_line.h"
 #include <stdio.h>
+#include <assert.h>
+
+void extra()
+{
+	char *line;
+
+	line = NULL;
+	printf("%d\n", get_next_line(42, &line));
+}
 
 int			main(int argc, char *argv[])
 {
+	char 	*line;
+	int		out;
+	int		p[2];
 	int		fd;
-	char	**line;
-	int		linereturn;
-	int count = 0;
+	int		ret;
 
-	linereturn = 1;
-	line = (char **)malloc(sizeof(char) * 0);
-	if (argc == 2)
-	{
-		fd = open(argv[1], O_RDONLY);
-		while (linereturn != 0)
-		{
-			linereturn = get_next_line(fd, line);
-			if (linereturn == 1)
-				count++;
-		}
-		printf("%d\n", count);
-		close(fd);
-	}
-	while(1)
-		;
+	out = dup(1);
+	pipe(p);
+
+	fd = 1;
+	dup2(p[1], fd);
+	write(fd, "abcd\n", 5);
+	close(p[1]);
+	dup2(out, fd);
+	get_next_line(p[0], &line);
+	assert(strcmp(line, "abcd") == 0);
+	ret = get_next_line(p[0], &line);
+	assert(ret == 0);
+	extra();
 	return (0);
 }
